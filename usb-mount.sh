@@ -11,6 +11,7 @@
 
 PATH="$PATH:/usr/bin:/usr/local/bin:/usr/sbin:/usr/local/sbin:/bin:/sbin"
 log="logger -t usb-mount.sh -s "
+destination_dir="/your/path/here" #update this with path you want file to go to.
 
 usage()
 {
@@ -30,6 +31,13 @@ DEVICE="/dev/${DEVBASE}"
 MOUNT_POINT=$(mount | grep ${DEVICE} | awk '{ print $3 }')
 
 DEV_LABEL=""
+
+search_and_copy_file()
+{
+    local specific_file="myfile.txt" #change this to whatever file you need
+    
+    find "${MOUNT_POINT}" -type f -name "${specific_file}" -exec cp {} "${destination_dir}/${specific_file}" \;
+}
 
 do_mount()
 {
@@ -97,6 +105,9 @@ do_unmount()
 case "${ACTION}" in
     add)
         do_mount
+        if [[-d ${MOUNT_POINT} ]]; then
+            search_and_copy_file
+        fi
         ;;
     remove)
         do_unmount
