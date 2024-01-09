@@ -32,13 +32,6 @@ MOUNT_POINT=$(mount | grep ${DEVICE} | awk '{ print $3 }')
 
 DEV_LABEL=""
 
-search_and_copy_file()
-{
-    local specific_file="myfile.txt" #change this to whatever file you need
-    
-    find "${MOUNT_POINT}" -type f -name "${specific_file}" -exec cp {} "${destination_dir}/${specific_file}" \;
-}
-
 do_mount()
 {
     if [[ -n ${MOUNT_POINT} ]]; then
@@ -86,6 +79,8 @@ do_mount()
     fi
 
     ${log} "Mounted ${DEVICE} at ${MOUNT_POINT}"
+    local specific_file="myfile.txt"
+    find "${MOUNT_POINT}" -type f -name "${specific_file}" -exec cp {} "${destination_dir}/${specific_file}" \;
 }
 
 do_unmount()
@@ -105,9 +100,6 @@ do_unmount()
 case "${ACTION}" in
     add)
         do_mount
-        if [[-d ${MOUNT_POINT} ]]; then
-            search_and_copy_file
-        fi
         ;;
     remove)
         do_unmount
